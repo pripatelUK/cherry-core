@@ -3,7 +3,9 @@
 
 use std::{collections::BTreeMap, pin::Pin, sync::Arc};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
+#[cfg(feature = "pyo3")]
+use anyhow::anyhow;
 use arrow::record_batch::RecordBatch;
 use futures_lite::{Stream, StreamExt};
 use provider::common::{evm_query_to_generic, svm_query_to_generic};

@@ -1,4 +1,6 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, Result};
+#[cfg(feature = "pyo3")]
+use anyhow::Context;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Clone)]
@@ -84,6 +86,7 @@ fn extract_data<const N: usize>(ob: &pyo3::Bound<'_, pyo3::PyAny>) -> pyo3::PyRe
     }
 }
 
+#[cfg(feature = "pyo3")]
 fn hex_to_bytes(hex_string: &str) -> Result<Vec<u8>> {
     let hex_string = hex_string.strip_prefix("0x").unwrap_or(hex_string);
     let hex_string = if hex_string.len() % 2 == 1 {
