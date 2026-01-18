@@ -265,19 +265,13 @@ fn map_response(
 ) -> Result<BTreeMap<String, RecordBatch>> {
     let mut data = BTreeMap::new();
 
-    data.insert(
-        "blocks".to_owned(),
-        map_blocks(&resp.blocks).context("map blocks")?,
-    );
+    data.insert("blocks".to_owned(), map_blocks(&resp.blocks).context("map blocks")?);
     data.insert(
         "transactions".to_owned(),
         map_transactions(&resp.transactions).context("map transactions")?,
     );
     data.insert("logs".to_owned(), map_logs(&resp.logs).context("map logs")?);
-    data.insert(
-        "traces".to_owned(),
-        map_traces(&resp.traces).context("map traces")?,
-    );
+    data.insert("traces".to_owned(), map_traces(&resp.traces).context("map traces")?);
 
     Ok(data)
 }
@@ -476,10 +470,7 @@ fn map_blocks(blocks: &[hypersync_client::ArrowBatch]) -> Result<RecordBatch> {
                 map_hypersync_binary_array_to_decimal256(&batch, "gas_limit", num_rows)?,
                 map_hypersync_binary_array_to_decimal256(&batch, "gas_used", num_rows)?,
                 map_hypersync_binary_array_to_decimal256(&batch, "timestamp", num_rows)?,
-                new_null_array(
-                    schema.column_with_name("uncles").unwrap().1.data_type(),
-                    num_rows,
-                ),
+                new_null_array(schema.column_with_name("uncles").unwrap().1.data_type(), num_rows),
                 map_hypersync_binary_array_to_decimal256(&batch, "base_fee_per_gas", num_rows)?,
                 map_hypersync_binary_array_to_decimal256(&batch, "blob_gas_used", num_rows)?,
                 map_hypersync_binary_array_to_decimal256(&batch, "excess_blob_gas", num_rows)?,
@@ -583,10 +574,7 @@ fn map_transactions(transactions: &[hypersync_client::ArrowBatch]) -> Result<Rec
                 arrow::compute::cast_with_options(
                     &map_hypersync_binary_array_to_decimal256(&batch, "l1_block_number", num_rows)?,
                     &DataType::UInt64,
-                    &arrow::compute::CastOptions {
-                        safe: true,
-                        ..Default::default()
-                    },
+                    &arrow::compute::CastOptions { safe: true, ..Default::default() },
                 )
                 .context("cast l1_block_number column from decimal256 to uint64")?,
                 map_hypersync_binary_array_to_decimal256(&batch, "mint", num_rows)?,

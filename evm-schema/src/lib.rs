@@ -72,11 +72,7 @@ pub fn transactions_schema() -> Schema {
         // practice
         Field::new("r", DataType::Binary, true),
         Field::new("s", DataType::Binary, true),
-        Field::new(
-            "max_priority_fee_per_gas",
-            DataType::Decimal256(76, 0),
-            true,
-        ),
+        Field::new("max_priority_fee_per_gas", DataType::Decimal256(76, 0), true),
         Field::new("max_fee_per_gas", DataType::Decimal256(76, 0), true),
         Field::new("chain_id", DataType::Decimal256(76, 0), true),
         Field::new("cumulative_gas_used", DataType::Decimal256(76, 0), true),

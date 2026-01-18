@@ -88,11 +88,7 @@ pub fn transactions_schema() -> Schema {
         ),
         Field::new(
             "address_table_lookups",
-            DataType::List(Arc::new(Field::new(
-                "item",
-                address_table_lookup_dt(),
-                true,
-            ))),
+            DataType::List(Arc::new(Field::new("item", address_table_lookup_dt(), true))),
             true,
         ),
         Field::new("num_readonly_signed_accounts", DataType::UInt32, true),

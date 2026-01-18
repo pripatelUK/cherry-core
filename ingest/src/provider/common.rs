@@ -38,10 +38,7 @@ pub fn evm_query_to_generic(query: &evm::Query) -> GenericQuery {
     if query.include_all_blocks {
         selection.insert(
             "blocks".to_owned(),
-            vec![TableSelection {
-                filters: BTreeMap::new(),
-                include: Vec::new(),
-            }],
+            vec![TableSelection { filters: BTreeMap::new(), include: Vec::new() }],
         );
     }
 
@@ -79,30 +76,21 @@ pub fn evm_query_to_generic(query: &evm::Query) -> GenericQuery {
 }
 
 fn evm_tx_selection_to_generic(selection: &evm::TransactionRequest) -> TableSelection {
-    let from = Arc::new(BinaryArray::from_iter_values(
-        selection.from_.iter().map(|x| x.0.as_slice()),
-    ));
-    let to = Arc::new(BinaryArray::from_iter_values(
-        selection.to.iter().map(|x| x.0.as_slice()),
-    ));
-    let sighash = Arc::new(BinaryArray::from_iter_values(
-        selection.sighash.iter().map(|x| x.0.as_slice()),
-    ));
-    let status = Arc::new(UInt8Array::from_iter_values(
-        selection.status.iter().copied(),
-    ));
-    let type_ = Arc::new(UInt8Array::from_iter_values(
-        selection.type_.iter().copied(),
-    ));
+    let from =
+        Arc::new(BinaryArray::from_iter_values(selection.from_.iter().map(|x| x.0.as_slice())));
+    let to = Arc::new(BinaryArray::from_iter_values(selection.to.iter().map(|x| x.0.as_slice())));
+    let sighash =
+        Arc::new(BinaryArray::from_iter_values(selection.sighash.iter().map(|x| x.0.as_slice())));
+    let status = Arc::new(UInt8Array::from_iter_values(selection.status.iter().copied()));
+    let type_ = Arc::new(UInt8Array::from_iter_values(selection.type_.iter().copied()));
     let contract_deployment_address = Arc::new(BinaryArray::from_iter_values(
         selection
             .contract_deployment_address
             .iter()
             .map(|x| x.0.as_slice()),
     ));
-    let hash = Arc::new(BinaryArray::from_iter_values(
-        selection.hash.iter().map(|x| x.0.as_slice()),
-    ));
+    let hash =
+        Arc::new(BinaryArray::from_iter_values(selection.hash.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 7] = [
         ("from", from),
@@ -161,24 +149,18 @@ fn evm_tx_selection_to_generic(selection: &evm::TransactionRequest) -> TableSele
 }
 
 fn evm_trace_selection_to_generic(selection: &evm::TraceRequest) -> TableSelection {
-    let from = Arc::new(BinaryArray::from_iter_values(
-        selection.from_.iter().map(|x| x.0.as_slice()),
-    ));
-    let to = Arc::new(BinaryArray::from_iter_values(
-        selection.to.iter().map(|x| x.0.as_slice()),
-    ));
-    let address = Arc::new(BinaryArray::from_iter_values(
-        selection.address.iter().map(|x| x.0.as_slice()),
-    ));
+    let from =
+        Arc::new(BinaryArray::from_iter_values(selection.from_.iter().map(|x| x.0.as_slice())));
+    let to = Arc::new(BinaryArray::from_iter_values(selection.to.iter().map(|x| x.0.as_slice())));
+    let address =
+        Arc::new(BinaryArray::from_iter_values(selection.address.iter().map(|x| x.0.as_slice())));
     let call_type = Arc::new(StringArray::from_iter_values(selection.call_type.iter()));
     let reward_type = Arc::new(StringArray::from_iter_values(selection.reward_type.iter()));
     let type_ = Arc::new(StringArray::from_iter_values(selection.type_.iter()));
-    let sighash = Arc::new(BinaryArray::from_iter_values(
-        selection.sighash.iter().map(|x| x.0.as_slice()),
-    ));
-    let author = Arc::new(BinaryArray::from_iter_values(
-        selection.author.iter().map(|x| x.0.as_slice()),
-    ));
+    let sighash =
+        Arc::new(BinaryArray::from_iter_values(selection.sighash.iter().map(|x| x.0.as_slice())));
+    let author =
+        Arc::new(BinaryArray::from_iter_values(selection.author.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 8] = [
         ("from", from),
@@ -249,21 +231,16 @@ fn evm_trace_selection_to_generic(selection: &evm::TraceRequest) -> TableSelecti
 }
 
 fn evm_log_selection_to_generic(selection: &evm::LogRequest) -> TableSelection {
-    let address = Arc::new(BinaryArray::from_iter_values(
-        selection.address.iter().map(|x| x.0.as_slice()),
-    ));
-    let topic0 = Arc::new(BinaryArray::from_iter_values(
-        selection.topic0.iter().map(|x| x.0.as_slice()),
-    ));
-    let topic1 = Arc::new(BinaryArray::from_iter_values(
-        selection.topic1.iter().map(|x| x.0.as_slice()),
-    ));
-    let topic2 = Arc::new(BinaryArray::from_iter_values(
-        selection.topic2.iter().map(|x| x.0.as_slice()),
-    ));
-    let topic3 = Arc::new(BinaryArray::from_iter_values(
-        selection.topic3.iter().map(|x| x.0.as_slice()),
-    ));
+    let address =
+        Arc::new(BinaryArray::from_iter_values(selection.address.iter().map(|x| x.0.as_slice())));
+    let topic0 =
+        Arc::new(BinaryArray::from_iter_values(selection.topic0.iter().map(|x| x.0.as_slice())));
+    let topic1 =
+        Arc::new(BinaryArray::from_iter_values(selection.topic1.iter().map(|x| x.0.as_slice())));
+    let topic2 =
+        Arc::new(BinaryArray::from_iter_values(selection.topic2.iter().map(|x| x.0.as_slice())));
+    let topic3 =
+        Arc::new(BinaryArray::from_iter_values(selection.topic3.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 5] = [
         ("address", address),
@@ -385,10 +362,7 @@ pub fn svm_query_to_generic(query: &svm::Query) -> GenericQuery {
     if query.include_all_blocks {
         selection.insert(
             "blocks".to_owned(),
-            vec![TableSelection {
-                filters: BTreeMap::new(),
-                include: Vec::new(),
-            }],
+            vec![TableSelection { filters: BTreeMap::new(), include: Vec::new() }],
         );
     }
 
@@ -450,51 +424,21 @@ fn svm_instruction_selection_to_generic(selection: &svm::InstructionRequest) -> 
     let discriminator = Arc::new(BinaryArray::from_iter_values(
         selection.discriminator.iter().map(|x| x.0.as_slice()),
     ));
-    let d1 = Arc::new(BinaryArray::from_iter_values(
-        selection.d1.iter().map(|x| x.0.as_slice()),
-    ));
-    let d2 = Arc::new(BinaryArray::from_iter_values(
-        selection.d2.iter().map(|x| x.0.as_slice()),
-    ));
-    let d3 = Arc::new(BinaryArray::from_iter_values(
-        selection.d3.iter().map(|x| x.0.as_slice()),
-    ));
-    let d4 = Arc::new(BinaryArray::from_iter_values(
-        selection.d4.iter().map(|x| x.0.as_slice()),
-    ));
-    let d8 = Arc::new(BinaryArray::from_iter_values(
-        selection.d8.iter().map(|x| x.0.as_slice()),
-    ));
-    let a0 = Arc::new(BinaryArray::from_iter_values(
-        selection.a0.iter().map(|x| x.0.as_slice()),
-    ));
-    let a1 = Arc::new(BinaryArray::from_iter_values(
-        selection.a1.iter().map(|x| x.0.as_slice()),
-    ));
-    let a2 = Arc::new(BinaryArray::from_iter_values(
-        selection.a2.iter().map(|x| x.0.as_slice()),
-    ));
-    let a3 = Arc::new(BinaryArray::from_iter_values(
-        selection.a3.iter().map(|x| x.0.as_slice()),
-    ));
-    let a4 = Arc::new(BinaryArray::from_iter_values(
-        selection.a4.iter().map(|x| x.0.as_slice()),
-    ));
-    let a5 = Arc::new(BinaryArray::from_iter_values(
-        selection.a5.iter().map(|x| x.0.as_slice()),
-    ));
-    let a6 = Arc::new(BinaryArray::from_iter_values(
-        selection.a6.iter().map(|x| x.0.as_slice()),
-    ));
-    let a7 = Arc::new(BinaryArray::from_iter_values(
-        selection.a7.iter().map(|x| x.0.as_slice()),
-    ));
-    let a8 = Arc::new(BinaryArray::from_iter_values(
-        selection.a8.iter().map(|x| x.0.as_slice()),
-    ));
-    let a9 = Arc::new(BinaryArray::from_iter_values(
-        selection.a9.iter().map(|x| x.0.as_slice()),
-    ));
+    let d1 = Arc::new(BinaryArray::from_iter_values(selection.d1.iter().map(|x| x.0.as_slice())));
+    let d2 = Arc::new(BinaryArray::from_iter_values(selection.d2.iter().map(|x| x.0.as_slice())));
+    let d3 = Arc::new(BinaryArray::from_iter_values(selection.d3.iter().map(|x| x.0.as_slice())));
+    let d4 = Arc::new(BinaryArray::from_iter_values(selection.d4.iter().map(|x| x.0.as_slice())));
+    let d8 = Arc::new(BinaryArray::from_iter_values(selection.d8.iter().map(|x| x.0.as_slice())));
+    let a0 = Arc::new(BinaryArray::from_iter_values(selection.a0.iter().map(|x| x.0.as_slice())));
+    let a1 = Arc::new(BinaryArray::from_iter_values(selection.a1.iter().map(|x| x.0.as_slice())));
+    let a2 = Arc::new(BinaryArray::from_iter_values(selection.a2.iter().map(|x| x.0.as_slice())));
+    let a3 = Arc::new(BinaryArray::from_iter_values(selection.a3.iter().map(|x| x.0.as_slice())));
+    let a4 = Arc::new(BinaryArray::from_iter_values(selection.a4.iter().map(|x| x.0.as_slice())));
+    let a5 = Arc::new(BinaryArray::from_iter_values(selection.a5.iter().map(|x| x.0.as_slice())));
+    let a6 = Arc::new(BinaryArray::from_iter_values(selection.a6.iter().map(|x| x.0.as_slice())));
+    let a7 = Arc::new(BinaryArray::from_iter_values(selection.a7.iter().map(|x| x.0.as_slice())));
+    let a8 = Arc::new(BinaryArray::from_iter_values(selection.a8.iter().map(|x| x.0.as_slice())));
+    let a9 = Arc::new(BinaryArray::from_iter_values(selection.a9.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 17] = [
         ("program_id", program_id),
@@ -598,9 +542,8 @@ fn svm_instruction_selection_to_generic(selection: &svm::InstructionRequest) -> 
 }
 
 fn svm_transaction_selection_to_generic(selection: &svm::TransactionRequest) -> TableSelection {
-    let fee_payer = Arc::new(BinaryArray::from_iter_values(
-        selection.fee_payer.iter().map(|x| x.0.as_slice()),
-    ));
+    let fee_payer =
+        Arc::new(BinaryArray::from_iter_values(selection.fee_payer.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 1] = [("fee_payer", fee_payer)];
 
@@ -648,9 +591,7 @@ fn svm_log_selection_to_generic(selection: &svm::LogRequest) -> TableSelection {
     let program_id = Arc::new(BinaryArray::from_iter_values(
         selection.program_id.iter().map(|x| x.0.as_slice()),
     ));
-    let kind = Arc::new(StringArray::from_iter_values(
-        selection.kind.iter().map(|x| x.as_str()),
-    ));
+    let kind = Arc::new(StringArray::from_iter_values(selection.kind.iter().map(|x| x.as_str())));
 
     let filters: [(&str, Arc<dyn Array>); 2] = [("program_id", program_id), ("kind", kind)];
 
@@ -695,9 +636,8 @@ fn svm_log_selection_to_generic(selection: &svm::LogRequest) -> TableSelection {
 }
 
 fn svm_balance_selection_to_generic(selection: &svm::BalanceRequest) -> TableSelection {
-    let account = Arc::new(BinaryArray::from_iter_values(
-        selection.account.iter().map(|x| x.0.as_slice()),
-    ));
+    let account =
+        Arc::new(BinaryArray::from_iter_values(selection.account.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 1] = [("account", account)];
 
@@ -742,24 +682,20 @@ fn svm_balance_selection_to_generic(selection: &svm::BalanceRequest) -> TableSel
 }
 
 fn svm_token_balance_selection_to_generic(selection: &svm::TokenBalanceRequest) -> TableSelection {
-    let account = Arc::new(BinaryArray::from_iter_values(
-        selection.account.iter().map(|x| x.0.as_slice()),
-    ));
+    let account =
+        Arc::new(BinaryArray::from_iter_values(selection.account.iter().map(|x| x.0.as_slice())));
     let pre_program_id = Arc::new(BinaryArray::from_iter_values(
         selection.pre_program_id.iter().map(|x| x.0.as_slice()),
     ));
     let post_program_id = Arc::new(BinaryArray::from_iter_values(
         selection.post_program_id.iter().map(|x| x.0.as_slice()),
     ));
-    let pre_mint = Arc::new(BinaryArray::from_iter_values(
-        selection.pre_mint.iter().map(|x| x.0.as_slice()),
-    ));
-    let post_mint = Arc::new(BinaryArray::from_iter_values(
-        selection.post_mint.iter().map(|x| x.0.as_slice()),
-    ));
-    let pre_owner = Arc::new(BinaryArray::from_iter_values(
-        selection.pre_owner.iter().map(|x| x.0.as_slice()),
-    ));
+    let pre_mint =
+        Arc::new(BinaryArray::from_iter_values(selection.pre_mint.iter().map(|x| x.0.as_slice())));
+    let post_mint =
+        Arc::new(BinaryArray::from_iter_values(selection.post_mint.iter().map(|x| x.0.as_slice())));
+    let pre_owner =
+        Arc::new(BinaryArray::from_iter_values(selection.pre_owner.iter().map(|x| x.0.as_slice())));
     let post_owner = Arc::new(BinaryArray::from_iter_values(
         selection.post_owner.iter().map(|x| x.0.as_slice()),
     ));
@@ -815,9 +751,8 @@ fn svm_token_balance_selection_to_generic(selection: &svm::TokenBalanceRequest) 
 }
 
 fn svm_reward_selection_to_generic(selection: &svm::RewardRequest) -> TableSelection {
-    let pubkey = Arc::new(BinaryArray::from_iter_values(
-        selection.pubkey.iter().map(|x| x.0.as_slice()),
-    ));
+    let pubkey =
+        Arc::new(BinaryArray::from_iter_values(selection.pubkey.iter().map(|x| x.0.as_slice())));
 
     let filters: [(&str, Arc<dyn Array>); 1] = [("pubkey", pubkey)];
 

@@ -25,10 +25,7 @@ pub fn cast<S: AsRef<str>>(
 
     let mut arrays = Vec::with_capacity(data.num_columns());
 
-    let cast_opt = CastOptions {
-        safe: allow_cast_fail,
-        ..Default::default()
-    };
+    let cast_opt = CastOptions { safe: allow_cast_fail, ..Default::default() };
 
     for (col, field) in data.columns().iter().zip(data.schema_ref().fields().iter()) {
         let cast_target = map.iter().find(|x| x.0.as_ref() == field.name());
@@ -36,10 +33,8 @@ pub fn cast<S: AsRef<str>>(
         let col = match cast_target {
             Some(tgt) => {
                 // allow precision loss for decimal types into floating point types
-                if matches!(
-                    col.data_type(),
-                    DataType::Decimal256(..) | DataType::Decimal128(..)
-                ) && tgt.1.is_floating()
+                if matches!(col.data_type(), DataType::Decimal256(..) | DataType::Decimal128(..))
+                    && tgt.1.is_floating()
                 {
                     let string_col =
                         arrow::compute::cast_with_options(col, &DataType::Utf8, &cast_opt)
@@ -115,18 +110,13 @@ pub fn cast_by_type(
 
     let mut arrays = Vec::with_capacity(data.num_columns());
 
-    let cast_opt = CastOptions {
-        safe: allow_cast_fail,
-        ..Default::default()
-    };
+    let cast_opt = CastOptions { safe: allow_cast_fail, ..Default::default() };
 
     for (col, field) in data.columns().iter().zip(data.schema_ref().fields().iter()) {
         let col = if col.data_type() == from_type {
             // allow precision loss for decimal types into floating point types
-            if matches!(
-                col.data_type(),
-                DataType::Decimal256(..) | DataType::Decimal128(..)
-            ) && to_type.is_floating()
+            if matches!(col.data_type(), DataType::Decimal256(..) | DataType::Decimal128(..))
+                && to_type.is_floating()
             {
                 let string_col = arrow::compute::cast_with_options(col, &DataType::Utf8, &cast_opt)
                     .with_context(|| {
@@ -146,17 +136,15 @@ pub fn cast_by_type(
                         })?,
                 )
             } else {
-                Arc::new(
-                    arrow::compute::cast_with_options(col, to_type, &cast_opt).with_context(
-                        || {
-                            format!(
-                                "Failed when casting_by_type column '{}' to {:?}",
-                                field.name(),
-                                to_type
-                            )
-                        },
-                    )?,
-                )
+                Arc::new(arrow::compute::cast_with_options(col, to_type, &cast_opt).with_context(
+                    || {
+                        format!(
+                            "Failed when casting_by_type column '{}' to {:?}",
+                            field.name(),
+                            to_type
+                        )
+                    },
+                )?)
             }
         } else {
             col.clone()
@@ -288,11 +276,7 @@ pub fn schema_binary_to_string(schema: &Schema) -> Schema {
 
     for f in schema.fields().iter() {
         if f.data_type() == &DataType::Binary {
-            fields.push(Arc::new(Field::new(
-                f.name().clone(),
-                DataType::Utf8,
-                f.is_nullable(),
-            )));
+            fields.push(Arc::new(Field::new(f.name().clone(), DataType::Utf8, f.is_nullable())));
         } else if f.data_type() == &DataType::LargeBinary {
             fields.push(Arc::new(Field::new(
                 f.name().clone(),
@@ -315,11 +299,7 @@ pub fn schema_decimal256_to_binary(schema: &Schema) -> Schema {
 
     for f in schema.fields().iter() {
         if f.data_type() == &DataType::Decimal256(76, 0) {
-            fields.push(Arc::new(Field::new(
-                f.name().clone(),
-                DataType::Binary,
-                f.is_nullable(),
-            )));
+            fields.push(Arc::new(Field::new(f.name().clone(), DataType::Binary, f.is_nullable())));
         } else {
             fields.push(f.clone());
         }

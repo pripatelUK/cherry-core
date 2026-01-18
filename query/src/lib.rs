@@ -98,11 +98,8 @@ impl Filter {
                     .downcast_ref::<BooleanArray>()
                     .context("cast array to boolean array")?;
 
-                let mut filter = if *b {
-                    arr.clone()
-                } else {
-                    compute::not(arr).context("negate array")?
-                };
+                let mut filter =
+                    if *b { arr.clone() } else { compute::not(arr).context("negate array")? };
 
                 if let Some(nulls) = filter.nulls() {
                     if nulls.null_count() > 0 {
@@ -205,9 +202,7 @@ impl Contains {
 
     pub fn new(array: Arc<dyn Array>) -> Result<Self> {
         if array.is_nullable() {
-            return Err(anyhow!(
-                "cannot construct contains filter with a nullable array"
-            ));
+            return Err(anyhow!("cannot construct contains filter with a nullable array"));
         }
 
         // only use a hash table if there are more than 128 elements
@@ -310,9 +305,7 @@ impl Contains {
 
             for v in other_arr.values().iter() {
                 let c = ht
-                    .find(hash_one(v), |idx| unsafe {
-                        self_arr.values().get_unchecked(*idx) == v
-                    })
+                    .find(hash_one(v), |idx| unsafe { self_arr.values().get_unchecked(*idx) == v })
                     .is_some();
                 filter.append_value(c);
             }
@@ -358,9 +351,7 @@ pub struct StartsWith {
 impl StartsWith {
     pub fn new(array: Arc<dyn Array>) -> Result<Self> {
         if array.is_nullable() {
-            return Err(anyhow!(
-                "cannot construct starts_with filter with a nullable array"
-            ));
+            return Err(anyhow!("cannot construct starts_with filter with a nullable array"));
         }
 
         Ok(Self { array })
@@ -595,10 +586,7 @@ fn run_table_selection(
         }
 
         let other_table_data = data.get(&inc.other_table_name).with_context(|| {
-            format!(
-                "get data for table {} as other table data",
-                inc.other_table_name
-            )
+            format!("get data for table {} as other table data", inc.other_table_name)
         })?;
 
         let self_arr = columns_to_binary_array(table_data, &inc.field_names)
@@ -619,10 +607,7 @@ fn run_table_selection(
 
         let other_arr = columns_to_binary_array(other_table_data, &inc.other_table_field_names)
             .with_context(|| {
-                format!(
-                    "get row format binary arr for other table {}",
-                    inc.other_table_name
-                )
+                format!("get row format binary arr for other table {}", inc.other_table_name)
             })?;
 
         let f = contains
@@ -715,9 +700,7 @@ mod tests {
                 Arc::new(Field::new("height2", DataType::UInt64, true)),
             ])),
             vec![
-                Arc::new(StringArray::from_iter_values(vec![
-                    "yusuf", "abuzer", "asd",
-                ])),
+                Arc::new(StringArray::from_iter_values(vec!["yusuf", "abuzer", "asd"])),
                 Arc::new(UInt64Array::from_iter(vec![11, 12, 13].into_iter())),
                 Arc::new(UInt64Array::from_iter(vec![50, 61, 70].into_iter())),
             ],
@@ -785,10 +768,7 @@ mod tests {
         assert_eq!(team_a.num_columns(), 1);
         assert_eq!(team_b.num_columns(), 1);
 
-        assert_eq!(
-            name.as_string(),
-            &StringArray::from_iter_values(["kamil", "mahmut", "kazim"])
-        );
+        assert_eq!(name.as_string(), &StringArray::from_iter_values(["kamil", "mahmut", "kazim"]));
         assert_eq!(name2.as_string(), &StringArray::from_iter_values(["yusuf"]));
     }
 
@@ -811,12 +791,9 @@ mod tests {
         .unwrap();
 
         let query = Query {
-            fields: [(
-                "data".to_owned(),
-                vec!["name".to_owned(), "binary".to_owned()],
-            )]
-            .into_iter()
-            .collect(),
+            fields: [("data".to_owned(), vec!["name".to_owned(), "binary".to_owned()])]
+                .into_iter()
+                .collect(),
             selection: Arc::new(
                 [(
                     "data".to_owned(),
